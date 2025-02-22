@@ -1,0 +1,32 @@
+body{
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	font-family: 'Jost', sans-serif;
+	background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+}
+.main{
+	width: 350px;
+	height: 500px;
+	background:  #24243e;
+	overflow: hidden;
+	border-radius: 10px;
+	box-shadow: 5px 20px 50px #000;
+    
+.for{
+    background-color: #24243e;
+    color: antiquewhite;
+    font-size: 15pt;
+    
+}
+.paperbut{
+    font-family: Jost;
+    font-size: 15pt;
+	
+}
+a{
+	text-decoration: none;
+}
