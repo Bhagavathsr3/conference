@@ -1,0 +1,35 @@
+name: Pre-Prod Tests
+
+on:
+  pull_request:
+    branches: [ prod ]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout web app code
+      - uses: actions/checkout@v3
+
+      # Checkout test scripts repo
+      - uses: actions/checkout@v3
+        with:
+          repository: yourusername/tests
+          path: tests
+
+      # Set up Java
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Install dependencies
+      - run: |
+          cd tests
+          mvn install
+
+      # Run Selenium tests
+      - run: |
+          cd tests
+          mvn test
