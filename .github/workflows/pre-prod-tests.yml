@@ -15,7 +15,7 @@ jobs:
       # Checkout test scripts repo
       - uses: actions/checkout@v3
         with:
-          repository: yourusername/tests
+          repository: Bhagavathsr3/CiCdTestScriptsSelenium.git
           path: tests
 
       # Set up Java
