@@ -1,35 +1,42 @@
-name: Pre-Prod Tests
+name: Test and Deploy
 
 on:
-  pull_request:
-    branches: [ prod ]
+  push:
+    branches: [ main ]
 
 jobs:
-  run-tests:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      # Checkout web app code
       - uses: actions/checkout@v3
 
-      # Checkout test scripts repo
+      # Checkout test scripts
       - uses: actions/checkout@v3
         with:
           repository: Bhagavathsr3/CiCdTestScriptsSelenium.git
           path: tests
 
-      # Set up Java
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Install dependencies
       - run: |
           cd tests
           mvn install
-
-      # Run Selenium tests
-      - run: |
-          cd tests
           mvn test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/configure-pages@v3
+      - uses: actions/upload-pages-artifact@v2
+        with:
+          path: .
+      - uses: actions/deploy-pages@v2
