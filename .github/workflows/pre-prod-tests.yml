@@ -17,7 +17,7 @@ jobs:
           repository: Bhagavathsr3/CiCdTestScriptsSelenium
           path: tests
           token: ${{ secrets.GH_TOKEN }}   # ✅ use secret for authentication
-          ref: main
+          ref: master
       # Setup Java
       - uses: actions/setup-java@v3
         with:
