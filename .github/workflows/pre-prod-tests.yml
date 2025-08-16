@@ -43,4 +43,4 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .   # adjust this if your app build output is in another folder
-      - uses: actions/deploy-pages@v2
+      - uses: actions/deploy-pages@v4
