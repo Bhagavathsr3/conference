@@ -15,8 +15,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: Bhagavathsr3/CiCdTestScriptsSelenium.git
-          token: ${{ secrets.GH_TOKEN }}   # ✅ use secret for authentication
           path: tests
+          token: ${{ secrets.GH_TOKEN }}   # ✅ use secret for authentication
 
       # Setup Java
       - uses: actions/setup-java@v3
