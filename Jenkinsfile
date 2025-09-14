@@ -27,7 +27,7 @@ pipeline {
             steps {
                 dir('tests') {
                     echo '📥 Cloning Test Repo...'
-                    git branch: 'main', url: 'https://github.com/Bhagavathsr3/CiCdTestScriptsSelenium.git'
+                    git branch: 'master', url: 'https://github.com/Bhagavathsr3/CiCdTestScriptsSelenium.git'
                 }
             }
         }
