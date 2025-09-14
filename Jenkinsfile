@@ -44,7 +44,7 @@ pipeline {
             }
             post {
                 unsuccessful {
-                    error("❌ Tests failed! Pipeline stopped. Previous build remains live.")
+                    error("❌ Tests failed! Pipeline stopped. Previous build remains live.....")
                 }
                 always {
                     junit 'tests/target/surefire-reports/*.xml'
