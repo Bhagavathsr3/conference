@@ -15,7 +15,7 @@ pipeline {
         // -------------------------------
         stage('Checkout App Repo') {
             steps {
-                echo '📥 Cloning App Repo...'
+                echo '📥 Cloning App Repo.......'
                 git branch: 'main', url: 'https://github.com/Bhagavathsr3/conference.git'
             }
         }
