@@ -2,14 +2,17 @@ pipeline {
     agent any
 
     triggers {
-        githubPush()   // Trigger when new commit happens in App Repo
+        githubPush()   // Trigger on new commit to App Repo
     }
 
     environment {
-        AWS_URL = "http://51.21.156.101/"
+        AWS_URL = "http://51.21.156.101/"   // Your EC2 Elastic IP
     }
 
     stages {
+        // -------------------------------
+        // Checkout App Repo
+        // -------------------------------
         stage('Checkout App Repo') {
             steps {
                 echo '📥 Cloning App Repo...'
@@ -17,13 +20,9 @@ pipeline {
             }
         }
 
-        stage('Build App') {
-            steps {
-                echo '🔨 Building the application...'
-                sh 'mvn clean install'   // or npm install / gradle build if needed
-            }
-        }
-
+        // -------------------------------
+        // Checkout Test Repo
+        // -------------------------------
         stage('Checkout Test Repo') {
             steps {
                 dir('tests') {
@@ -33,16 +32,19 @@ pipeline {
             }
         }
 
+        // -------------------------------
+        // Run Selenium Tests
+        // -------------------------------
         stage('Run Selenium Tests') {
             steps {
                 dir('tests') {
-                    echo "▶️ Running LoginTest against ${env.AWS_URL}"
+                    echo "▶️ Running Selenium tests against ${env.AWS_URL}"
                     sh "mvn clean test -Dtest=com.nopcommerce.testcases.LoginTest -Dapp.url=${env.AWS_URL}"
                 }
             }
             post {
                 unsuccessful {
-                    error("❌ Tests failed! Stopping pipeline. Previous build remains live.")
+                    error("❌ Tests failed! Pipeline stopped. Previous build remains live.")
                 }
                 always {
                     junit 'tests/target/surefire-reports/*.xml'
@@ -50,6 +52,9 @@ pipeline {
             }
         }
 
+        // -------------------------------
+        // Deploy to AWS
+        // -------------------------------
         stage('Deploy to AWS') {
             when {
                 branch 'main'
