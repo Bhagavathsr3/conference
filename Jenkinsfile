@@ -10,32 +10,37 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout App Repo') {
             steps {
-                echo '📥 Cloning App Repo...'
-                git branch: 'main', url: 'https://github.com/Bhagavathsr3/conference.git'
+                dir('app') {
+                    echo '📥 Cleaning and cloning App Repo...'
+                    deleteDir()
+                    git branch: 'main', url: 'https://github.com/Bhagavathsr3/conference.git'
+                }
             }
         }
 
         stage('Checkout Test Repo') {
             steps {
                 dir('tests') {
-                    echo '📥 Cloning Test Repo...'
+                    echo '📥 Cleaning and cloning Test Repo...'
+                    deleteDir()
                     git branch: 'master', url: 'https://github.com/Bhagavathsr3/CiCdTestScriptsSelenium.git'
                 }
             }
         }
 
-        stage('Run Selenium Tests') {
+        stage('Run Selenium HomeTest') {
             steps {
                 dir('tests') {
-                    echo "▶️ Running Selenium tests against ${env.AWS_URL} tests are running"
-                    sh "mvn clean test -Dtest=com.Conference.TestPage.HomeTest -Dapp.url=${env.AWS_URL}"
+                    echo "▶️ Running HomeTest against ${env.AWS_URL} in headless mode"
+                    sh "mvn test -Dtest=com.Conference.TestPage.HomeTest -Dapp.url=${env.AWS_URL}"
                 }
             }
             post {
                 unsuccessful {
-                    error("❌ Tests failed! Pipeline stopped. Previous build remains live")
+                    error("❌ HomeTest failed! Pipeline stopped. Previous build remains live.")
                 }
                 always {
                     junit 'tests/target/surefire-reports/*.xml'
