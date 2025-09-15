@@ -1,13 +1,18 @@
 pipeline {
     agent any
-
-  
-    stages {
-        stage('Check Pipeeline') {
-            steps {
-                echo '📥 just checking thats all '
-               
-            }
-        }
+    triggers {
+        githubPush()
     }
+    stages {
+        stage('Deploy') {
+            steps {
+                sh '''
+                  cd /var/www/html
+                  sudo rm -rf ./*
+                  git clone https://github.com/Bhagavathsr3/conference.git .
+                  echo "✅ Deployment complete!"
+                '''
+            }
+        }
+    }
 }
