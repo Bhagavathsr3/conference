@@ -35,7 +35,7 @@ pipeline {
             steps {
                 dir('tests') {
                     echo "▶️ Running HomeTest against ${env.AWS_URL} in headless mode"
-                    sh "mvn test -Dtest=com.Conference.TestPage.HomeTest -Dapp.url=${env.AWS_URL}"
+                    sh "mvn test -Dtest=com.Conference.TestPage.HomeTest -Dapp.url=${env.AWS_URL} -Dheadless=true"
                 }
             }
             post {
