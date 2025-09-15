@@ -49,7 +49,7 @@ pipeline {
                 expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                echo '✅ Tests passed! Deploying app to AWS...'
+                echo '✅ Tests passed! Deploying app to AWS'
                 sh './deploy.sh'
             }
         }
