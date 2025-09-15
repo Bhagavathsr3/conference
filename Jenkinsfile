@@ -29,7 +29,7 @@ pipeline {
         stage('Run Selenium Tests') {
             steps {
                 dir('tests') {
-                    echo "▶️ Running Selenium tests against ${env.AWS_URL}"
+                    echo "▶️ Running Selenium tests against ${env.AWS_URL} tests are running...."
                     sh "mvn clean test -Dtest=com.Conference.TestPage.HomeTest -Dapp.url=${env.AWS_URL}"
                 }
             }
