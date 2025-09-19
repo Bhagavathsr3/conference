@@ -50,23 +50,21 @@ pipeline {
         }
 
         stage('Deploy to AWS') {
-           
-            steps {
-                echo "🚀 Deploying app directly from Jenkinsfile..."
+    steps {
+        echo "🚀 Deploying app directly from Jenkinsfile..."
 
-                // Use Jenkins Credentials for EC2 SSH key (never commit PEM in repo)
-                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'KEYFILE')]) {
-                    sh """
-                        echo "📤 Copying app files to EC2..."
-                        scp -i $KEYFILE -o StrictHostKeyChecking=no -r app/*.html app/*.css app/*.js ubuntu@${EC2_IP}:/var/www/html/
+        withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'KEYFILE')]) {
 
-                        echo "🔄 Restarting Nginx..."
-                        ssh -i $KEYFILE -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "sudo systemctl restart nginx"
+            // Step 1: Copy files to a temp folder on EC2 (user-writable)
+            sh('scp -i ' + KEYFILE + ' -o StrictHostKeyChecking=no -r app/*.html app/*.css app/*.js ubuntu@' + EC2_IP + ':/tmp/')
 
-                        echo "✅ Deployment successful!"
-                    """
-                }
-            }
+            // Step 2: Move files to /var/www/html/ with sudo and restart Nginx
+            sh('ssh -i ' + KEYFILE + ' -o StrictHostKeyChecking=no ubuntu@' + EC2_IP + ' "sudo mv /tmp/* /var/www/html/ && sudo systemctl restart nginx"')
+
+            echo "✅ Deployment successful!"
         }
+    }
+}
+
     }
 }
