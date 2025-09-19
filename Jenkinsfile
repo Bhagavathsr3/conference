@@ -39,7 +39,10 @@ pipeline {
                 }
             }
             post {
-                unsuccessful {
+                success {
+                    echo "✅ Tests passed! Proceeding to deploy..."
+                }
+                failure {
                     error("❌ HomeTest failed! Pipeline stopped. Previous build remains live.")
                 }
                 always {
@@ -50,12 +53,13 @@ pipeline {
 
         stage('Deploy to AWS') {
             when {
-                branch 'main'
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
             }
             steps {
-                echo '✅ Tests passed! Deploying app to AWS...'
-                sh './deploy.sh'
+                dir('app') {
+                    echo '🚀 Deploying app to AWS live server...'
+                    sh './deploy.sh'
+                }
             }
         }
     }
