@@ -2,49 +2,45 @@ pipeline {
     agent any
 
     triggers {
-        githubPush()   // Trigger on new commit to App Repo
+        githubPush()
     }
 
     environment {
-        AWS_URL = "http://51.21.156.101/"   // Your EC2 Elastic IP
+        AWS_URL = "http://51.21.156.101/"
     }
 
     stages {
-        // -------------------------------
-        // Checkout App Repo
-        // -------------------------------
+
         stage('Checkout App Repo') {
             steps {
-                echo '📥 Cloning App Repo...'
-                git branch: 'main', url: 'https://github.com/Bhagavathsr3/conference.git'
-            }
-        }
-
-        // -------------------------------
-        // Checkout Test Repo
-        // -------------------------------
-        stage('Checkout Test Repo') {
-            steps {
-                dir('tests') {
-                    echo '📥 Cloning Test Repo...'
-                    git branch: 'main', url: 'https://github.com/Bhagavathsr3/CiCdTestScriptsSelenium.git'
+                dir('app') {
+                    echo '📥 Cleaning and cloning App Repo...'
+                    deleteDir()
+                    git branch: 'main', url: 'https://github.com/Bhagavathsr3/conference.git'
                 }
             }
         }
 
-        // -------------------------------
-        // Run Selenium Tests
-        // -------------------------------
-        stage('Run Selenium Tests') {
+        stage('Checkout Test Repo') {
             steps {
                 dir('tests') {
-                    echo "▶️ Running Selenium tests against ${env.AWS_URL}"
-                    sh "mvn clean test -Dtest=com.nopcommerce.testcases.LoginTest -Dapp.url=${env.AWS_URL}"
+                    echo '📥 Cleaning and cloning Test Repo...'
+                    deleteDir()
+                    git branch: 'master', url: 'https://github.com/Bhagavathsr3/CiCdTestScriptsSelenium.git'
+                }
+            }
+        }
+
+        stage('Run Selenium HomeTest') {
+            steps {
+                dir('tests') {
+                    echo "▶️ Running HomeTest against ${env.AWS_URL} in headless mode"
+                    sh "mvn test -Dtest=com.Conference.TestPage.HomeTest -Dapp.url=${env.AWS_URL} -Dheadless=true"
                 }
             }
             post {
                 unsuccessful {
-                    error("❌ Tests failed! Pipeline stopped. Previous build remains live.")
+                    error("❌ HomeTest failed! Pipeline stopped. Previous build remains live.")
                 }
                 always {
                     junit 'tests/target/surefire-reports/*.xml'
@@ -52,9 +48,6 @@ pipeline {
             }
         }
 
-        // -------------------------------
-        // Deploy to AWS
-        // -------------------------------
         stage('Deploy to AWS') {
             when {
                 branch 'main'
