@@ -50,9 +50,7 @@ pipeline {
         }
 
         stage('Deploy to AWS') {
-            when {
-                branch 'main'
-            }
+           
             steps {
                 echo "🚀 Deploying app directly from Jenkinsfile..."
 
