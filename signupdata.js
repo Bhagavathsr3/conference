@@ -16,3 +16,18 @@ console.log(userdetails);
 
 document.getElementById('username').innerHTML='';
 }
+function login(event) {
+    event.preventDefault(); // stop refresh
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (email === "" || password === "") {
+        alert("Please enter email and password!");
+        return false;
+    }
+
+    // ✅ Always redirect since it's demo
+    window.location.href = "index.html";
+    return true;
+}
