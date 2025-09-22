@@ -36,7 +36,8 @@ pipeline {
             steps {
                 dir('tests') {
                     echo "▶️ Running HomeTest against ${env.AWS_URL}"
-                    sh "mvn test -Dtest=com.Conference.TestPage.HomeTest -Dapp.url=${env.AWS_URL} -Dheadless=true"
+                   sh "mvn test -DsuiteXmlFile=src/test/resources/suites/regression.xml -Dapp.url=${env.AWS_URL} -Dheadless=true"
+
                 }
             }
             post {
